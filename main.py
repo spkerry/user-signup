@@ -86,6 +86,19 @@ signup_form = """
     </form>
 """
 
+#Page for successful user signup vaildation
+welcome_page = """
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>User Signup</title>
+    </head>
+    <body>
+        <h2>Welcome, %s!<h2>
+    </body>
+</html>
+"""
+
 #Functions to validate user input with aid of regular expressions
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 def valid_username(username):
@@ -160,10 +173,11 @@ class WelcomeHandler(webapp2.RequestHandler):
     #Handles successful user input from signup format
     #Prints welcome page with username in URL
     def get(self):
-        name = self.request.get("username")
-
-        content = "<h2>Welcome, " + name + "!</h2>"
-        self.response.write(content)
+        username = self.request.get("username")
+        if valid_username(username):
+            self.response.write(welcome_page % username)
+        else:
+            self.redirect("/")
 
 
 app = webapp2.WSGIApplication([
